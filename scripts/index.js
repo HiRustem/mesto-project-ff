@@ -8,29 +8,29 @@
 
 // @todo: Вывести карточки на страницу
 
-const deleteCardHandler = event => event.target.parentElement.remove();
+const placesListElement = document.querySelector('.places__list');
+const cardTemplate = document.querySelector('#card-template').content;
 
-const createCard = (cardName, cardLink, deleteHandler) => {
-  const cardTemplate = document.querySelector('#card-template').content;
+const deleteCardFunction = card => card.remove();
+
+const createCard = (card, deleteFunction) => {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
 
-  cardElement.querySelector('.card__title').textContent = cardName;
+  cardElement.querySelector('.card__title').textContent = card.name;
 
   const cardImage = cardElement.querySelector('.card__image');
-  cardImage.setAttribute('src', cardLink);
-  cardImage.setAttribute('alt', `Фото ${cardName}`);
+  cardImage.src = card.link;
+  cardImage.alt = `Фото ${card.name}`;
 
   const deleteButton = cardElement.querySelector('.card__delete-button');
-  deleteButton.addEventListener('click', deleteHandler);
+  deleteButton.addEventListener('click', () => deleteFunction(cardElement));
 
-  return cardElement
+  return cardElement;
 };
 
 const initCards = () => {
-  const placesListElement = document.querySelector('.places__list');
-
   for (let card of initialCards) {
-    const newCard = createCard(card.name, card.link, deleteCardHandler);
+    const newCard = createCard(card, deleteCardFunction);
     placesListElement.append(newCard);
   }
 };
