@@ -16,11 +16,11 @@ export const closeModal = (modalElement) => {
   document.removeEventListener('keydown', keyHandler);
 };
 
-export const closeModalHandler = (evt, element) => {
+export const closeModalHandler = (evt) => {
   if (
     evt.target.classList.contains('popup__close') ||
     evt.target === evt.currentTarget
   ) {
-    closeModal(element);
+    closeModal(evt.currentTarget);
   }
 };

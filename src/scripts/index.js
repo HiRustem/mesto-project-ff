@@ -82,21 +82,17 @@ const addCardFormSubmitHandler = (evt) => {
 
 editProfileButton.addEventListener('click', editFormOpenHandler);
 editForm.addEventListener('submit', editFormSubmitHandler);
-editPopup.addEventListener('click', (evt) => closeModalHandler(evt, editPopup));
+editPopup.addEventListener('click', closeModalHandler);
 
 // Слушатели событий для модального окна добавления новой карточки
 
 addCardButton.addEventListener('click', () => openModal(addCardPopup));
 addCardForm.addEventListener('submit', addCardFormSubmitHandler);
-addCardPopup.addEventListener('click', (evt) =>
-  closeModalHandler(evt, addCardPopup)
-);
+addCardPopup.addEventListener('click', closeModalHandler);
 
 // Слушатели событий для модального окна картинки карточек
 
-imagePopup.addEventListener('click', (evt) =>
-  closeModalHandler(evt, imagePopup)
-);
+imagePopup.addEventListener('click', closeModalHandler);
 
 // Инициализация карточек
 

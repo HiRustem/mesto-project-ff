@@ -3,11 +3,7 @@ const cardTemplate = document.querySelector('#card-template').content;
 export const deleteCardFunction = (card) => card.remove();
 
 export const likeCardFunction = (likeElement) => {
-  if (likeElement.classList.contains('card__like-button_is-active')) {
-    likeElement.classList.remove('card__like-button_is-active');
-  } else {
-    likeElement.classList.add('card__like-button_is-active');
-  }
+  likeElement.classList.toggle('card__like-button_is-active')
 };
 
 export const createCard = (
