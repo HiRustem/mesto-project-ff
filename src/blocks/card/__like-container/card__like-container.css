@@ -1,0 +1,13 @@
+.card__like-container {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 3px;
+}
+
+.card_likes {
+    font-size: 13px;
+    line-height: 121%;
+}

@@ -80,11 +80,15 @@
 <template id="card-template">
   <li class="places__item card">
     <img class="card__image" src="" alt="" />
-    <button aria-label="Кнопка удаления" type="button" class="card__delete-button"></button>
     <div class="card__description">
       <h2 class="card__title">
       </h2>
-      <button aria-label="Кнопка лайка" type="button" class="card__like-button"></button>
+
+      <div class="card__like-container">
+        <button aria-label="Кнопка лайка" type="button" class="card__like-button"></button>
+
+        <span class="card_likes"></span>
+      </div>
     </div>
   </li>
 </template>

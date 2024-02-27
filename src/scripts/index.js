@@ -1,7 +1,8 @@
-import { initialCards } from './cards';
 import { createCard, deleteCardFunction, likeCardFunction } from '../components/card';
 import { openModal, closeModal, closeModalHandler } from '../components/modal';
 import { enableValidation, clearValidation } from '../components/validation';
+
+import { getUserInfo, getInitialCards, saveUserInfo, saveNewCard } from '../components/api';
 
 const placesListElement = document.querySelector('.places__list');
 
@@ -52,13 +53,18 @@ const editFormOpenHandler = () => {
 const editFormSubmitHandler = (evt) => {
   evt.preventDefault();
 
-  const profileName = document.querySelector('.profile__title');
-  const profileDescription = document.querySelector('.profile__description');
   const formName = editForm.elements.name.value;
   const formDescription = editForm.elements.description.value;
 
-  profileName.textContent = formName;
-  profileDescription.textContent = formDescription;
+  saveUserInfo(formName, formDescription)
+    .then(() => {
+      const profileName = document.querySelector('.profile__title');
+      const profileDescription = document.querySelector('.profile__description');
+
+      profileName.textContent = formName;
+      profileDescription.textContent = formDescription;
+    })
+    .catch(error => console.log(error))
 
   closeModal(editPopup);
 };
@@ -79,18 +85,18 @@ const addCardFormSubmitHandler = (evt) => {
   const placeName = addCardForm.elements['place-name'].value;
   const link = addCardForm.elements['link'].value;
 
-  const cardObject = {
-    name: placeName,
-    link: link,
-  };
-
-  const newCard = createCard(
-    cardObject,
-    deleteCardFunction,
-    likeCardFunction,
-    openImagePopup
-  );
-  placesListElement.prepend(newCard);
+  Promise.all([getUserInfo(), saveNewCard(placeName, link)])
+    .then(([userInfo, card]) => {
+      const newCard = createCard(
+        userInfo['_id'],
+        card,
+        deleteCardFunction,
+        likeCardFunction,
+        openImagePopup
+      );
+      placesListElement.prepend(newCard);
+    })
+    .catch(error => console.log(error))
 
   addCardForm.reset();
   closeModal(addCardPopup);
@@ -112,11 +118,23 @@ addCardPopup.addEventListener('click', closeModalHandler);
 
 imagePopup.addEventListener('click', closeModalHandler);
 
-// Инициализация карточек
 
-const initCards = () => {
-  for (let card of initialCards) {
+// Вспомогательные методы
+
+const pasteUserInfo = (userInfo) => {
+  const profileImageElement = document.querySelector('.profile__image')
+  const profileTitleElement = document.querySelector('.profile__title')
+  const profileDescriptionElement = document.querySelector('.profile__description')
+
+  profileImageElement.style = `background-image: url(${userInfo.avatar});`
+  profileTitleElement.textContent = userInfo.name
+  profileDescriptionElement.textContent = userInfo.about
+}
+
+const createInitialCards = (userId, cards) => {
+  for (let card of cards) {
     const newCard = createCard(
+      userId,
       card,
       deleteCardFunction,
       likeCardFunction,
@@ -124,6 +142,18 @@ const initCards = () => {
     );
     placesListElement.append(newCard);
   }
+}
+
+// Инициализация карточек
+
+const initCards = () => {
+  Promise.all([getUserInfo(), getInitialCards()])
+    .then(([userInfo, cards]) => {
+      createInitialCards(userInfo['_id'], cards)
+
+      pasteUserInfo(userInfo)
+    })
+    .catch(error => console.log(error))
 };
 
 initCards();
