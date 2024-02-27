@@ -1,6 +1,7 @@
 import { initialCards } from './cards';
 import { createCard, deleteCardFunction, likeCardFunction } from '../components/card';
 import { openModal, closeModal, closeModalHandler } from '../components/modal';
+import { enableValidation, clearValidation } from '../components/validation';
 
 const placesListElement = document.querySelector('.places__list');
 
@@ -13,6 +14,15 @@ const addCardButton = document.querySelector('.profile__add-button');
 
 const editForm = document.forms['edit-profile'];
 const addCardForm = document.forms['new-place'];
+
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}
 
 // Функция показа модального окна картинки карточки
 
@@ -32,10 +42,10 @@ const editFormOpenHandler = () => {
   const name = document.querySelector('.profile__title');
   const description = document.querySelector('.profile__description');
 
-  const form = document.forms['edit-profile'];
-  form.elements.name.value = name.textContent;
-  form.elements.description.value = description.textContent;
+  editForm.elements.name.value = name.textContent;
+  editForm.elements.description.value = description.textContent;
 
+  clearValidation(editPopup, validationConfig)
   openModal(editPopup);
 };
 
@@ -54,6 +64,14 @@ const editFormSubmitHandler = (evt) => {
 };
 
 // Обработчики событий для модального окна добавления новой карточки
+
+const addCardFormOpenHandler = () => {
+  addCardForm.elements['place-name'].value = ''
+  addCardForm.elements.link.value = ''
+
+  clearValidation(addCardPopup, validationConfig)
+  openModal(addCardPopup)
+}
 
 const addCardFormSubmitHandler = (evt) => {
   evt.preventDefault();
@@ -86,7 +104,7 @@ editPopup.addEventListener('click', closeModalHandler);
 
 // Слушатели событий для модального окна добавления новой карточки
 
-addCardButton.addEventListener('click', () => openModal(addCardPopup));
+addCardButton.addEventListener('click', addCardFormOpenHandler);
 addCardForm.addEventListener('submit', addCardFormSubmitHandler);
 addCardPopup.addEventListener('click', closeModalHandler);
 
@@ -109,3 +127,5 @@ const initCards = () => {
 };
 
 initCards();
+
+enableValidation(validationConfig); 
