@@ -6,16 +6,20 @@ const config = {
     }
 }
 
+const checkStatus = (result) => {
+    if (result.ok) {
+        return result.json()
+    }
+
+    return Promise.reject(`Ошибка ${result.status}`)
+}
+
 export const getUserInfo = async () => {
     return fetch(`${config.baseUrl}/users/me`, {
         headers: config.headers
     })
     .then(result => {
-        if (result.ok) {
-            return result.json()
-        }
-
-        return Promise.reject(`Ошибка ${result.status}`)
+        return checkStatus(result)
     })
 }
   
@@ -24,11 +28,7 @@ export const getInitialCards = async () => {
         headers: config.headers
     })
     .then(result => {
-        if (result.ok) {
-            return result.json()
-        }
-
-        return Promise.reject(`Ошибка ${result.status}`)
+        return checkStatus(result)
     })
 }
 
@@ -42,9 +42,7 @@ export const saveUserInfo = async (name, about) => {
         })
     })
     .then(result => {
-        if (!result.ok) {
-            return Promise.reject(`Ошибка ${result.status}`)
-        }
+        return checkStatus(result)
     })
 }
 
@@ -58,11 +56,7 @@ export const saveNewCard = async (name, link) => {
         })
     })
     .then(result => {
-        if (result.ok) {
-            return result.json()
-        }
-
-        return Promise.reject(`Ошибка ${result.status}`)
+        return checkStatus(result)
     })
 }
 
@@ -72,9 +66,7 @@ export const deleteCard = async (cardId) => {
         headers: config.headers,
     })
     .then(result => {
-        if (!result.ok) {
-            return Promise.reject(`Ошибка ${result.status}`)
-        }
+        return checkStatus(result)
     })
 }
 
@@ -84,11 +76,7 @@ export const putLike = async (cardId) => {
         headers: config.headers,
     })
     .then(result => {
-        if (result.ok) {
-            return result.json()
-        }
-
-        return Promise.reject(`Ошибка ${result.status}`)
+        return checkStatus(result)
     })
 }
 
@@ -98,11 +86,7 @@ export const deleteLike = async (cardId) => {
         headers: config.headers,
     })
     .then(result => {
-        if (result.ok) {
-            return result.json()
-        }
-
-        return Promise.reject(`Ошибка ${result.status}`)
+        return checkStatus(result)
     })
 }
 
@@ -115,10 +99,6 @@ export const updateAvatar = async (avatarUrl) => {
         })
     })
     .then(result => {
-        if (result.ok) {
-            return result.json()
-        }
-
-        return Promise.reject(`Ошибка ${result.status}`)
+        return checkStatus(result)
     })
 }

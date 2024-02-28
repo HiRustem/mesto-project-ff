@@ -19,6 +19,15 @@ const editForm = document.forms['edit-profile'];
 const addCardForm = document.forms['new-place'];
 const updateAvatarForm = document.forms['update-avatar']
 
+const imagePopupImage = imagePopup.querySelector('.popup__image');
+const imagePopupCaption = imagePopup.querySelector('.popup__caption');
+
+const profileName = document.querySelector('.profile__title');
+const profileDescription = document.querySelector('.profile__description');
+
+const profileTitleElement = document.querySelector('.profile__title')
+const profileDescriptionElement = document.querySelector('.profile__description')
+
 const saveProfileButton = editPopup.querySelector('.popup__button')
 const saveCardButton = addCardPopup.querySelector('.popup__button')
 const saveAvatarButton = updateAvatarPopup.querySelector('.popup__button')
@@ -35,23 +44,17 @@ const validationConfig = {
 // Функция показа модального окна картинки карточки
 
 const openImagePopup = (cardImage) => {
-  const image = imagePopup.querySelector('.popup__image');
-  const caption = imagePopup.querySelector('.popup__caption');
-
-  image.src = cardImage.src;
-  image.alt = cardImage.alt;
-  caption.textContent = cardImage.alt;
+  imagePopupImage.src = cardImage.src;
+  imagePopupImage.alt = cardImage.alt;
+  imagePopupCaption.textContent = cardImage.alt;
 
   openModal(imagePopup);
 };
 
 // Обработчики событий для модального окна редактирования профиля
 const editFormOpenHandler = () => {
-  const name = document.querySelector('.profile__title');
-  const description = document.querySelector('.profile__description');
-
-  editForm.elements.name.value = name.textContent;
-  editForm.elements.description.value = description.textContent;
+  editForm.elements.name.value = profileName.textContent;
+  editForm.elements.description.value = profileDescription.textContent;
 
   clearValidation(editPopup, validationConfig)
   openModal(editPopup);
@@ -66,29 +69,28 @@ const editFormSubmitHandler = (evt) => {
   const formDescription = editForm.elements.description.value;
 
   saveUserInfo(formName, formDescription)
-    .then(() => {
+    .then((result) => {
       const profileName = document.querySelector('.profile__title');
       const profileDescription = document.querySelector('.profile__description');
 
-      profileName.textContent = formName;
-      profileDescription.textContent = formDescription;
+      profileName.textContent = result.name;
+      profileDescription.textContent = result.about;
+
+      closeModal(editPopup);
     })
     .catch(error => console.log(error))
     .finally(() => {
       saveProfileButton.textContent = 'Сохранить'
     })
-
-  closeModal(editPopup);
 };
 
 // Обработчики событий для модального окна добавления новой карточки
 
 const addCardFormOpenHandler = () => {
-  addCardForm.elements['place-name'].value = ''
-  addCardForm.elements.link.value = ''
+  addCardForm.reset();
 
-  clearValidation(addCardPopup, validationConfig)
-  openModal(addCardPopup)
+  clearValidation(addCardPopup, validationConfig);
+  openModal(addCardPopup);
 }
 
 const addCardFormSubmitHandler = (evt) => {
@@ -109,20 +111,19 @@ const addCardFormSubmitHandler = (evt) => {
         openImagePopup
       );
       placesListElement.prepend(newCard);
+
+      closeModal(addCardPopup);
     })
     .catch(error => console.log(error))
     .finally(() => {
       saveCardButton.textContent = 'Сохранить'
     })
-
-  addCardForm.reset();
-  closeModal(addCardPopup);
 };
 
 // Обработчики событий для модального окна обновления аватара
 
 const updateAvatarFormOpenHandler = () => {
-  updateAvatarForm.elements.link.value = ''
+  updateAvatarForm.reset();
 
   clearValidation(updateAvatarPopup, validationConfig)
   openModal(updateAvatarPopup)
@@ -138,13 +139,13 @@ const updateAvatarFormSubmitHandler = (evt) => {
   updateAvatar(newUrl)
     .then(result => {
       avatarElement.style = `background-image: url(${result.avatar});`
+
+      closeModal(updateAvatarPopup);
     })
     .catch(error => console.log(error))
     .finally(() => {
       saveAvatarButton.textContent = 'Сохранить'
     })
-
-  closeModal(updateAvatarPopup)
 }
 
 // Слушатели событий для модального окна редактирования профиля
@@ -172,9 +173,6 @@ updateAvatarPopup.addEventListener('click', closeModalHandler)
 // Вспомогательные методы
 
 const pasteUserInfo = (userInfo) => {
-  const profileTitleElement = document.querySelector('.profile__title')
-  const profileDescriptionElement = document.querySelector('.profile__description')
-
   avatarElement.style = `background-image: url(${userInfo.avatar});`
   profileTitleElement.textContent = userInfo.name
   profileDescriptionElement.textContent = userInfo.about
@@ -195,7 +193,7 @@ const createInitialCards = (userId, cards) => {
 
 // Инициализация карточек
 
-const initCards = () => {
+const renderInitialData = () => {
   Promise.all([getUserInfo(), getInitialCards()])
     .then(([userInfo, cards]) => {
       createInitialCards(userInfo['_id'], cards)
@@ -205,6 +203,6 @@ const initCards = () => {
     .catch(error => console.log(error))
 };
 
-initCards();
+renderInitialData();
 
 enableValidation(validationConfig); 

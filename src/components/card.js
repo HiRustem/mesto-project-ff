@@ -10,10 +10,8 @@ export const deleteCardFunction = (cardId, cardElement) => {
     .catch(error => console.log(error))
 }
 
-export const likeCardFunction = (userId, card, likeButton, likesElement) => {
-  const findUser = card.likes.find(user => user['_id'] === userId)
-
-  if (findUser) {
+export const likeCardFunction = (card, likeButton, likesElement) => {
+  if ([...likeButton.classList].includes('card__like-button_is-active')) {
     deleteLike(card['_id'])
       .then(result => {
         likesElement.textContent = result.likes.length
@@ -47,22 +45,18 @@ export const createCard = (
 
   cardImage.addEventListener('click', () => openImagePopupFunction(cardImage));
 
-  if (userId === card.owner['_id']) {
-    const deleteButton = document.createElement('button');
+  const deleteButton = cardElement.querySelector('.card__delete-button');
+  deleteButton.addEventListener('click', () => deleteFunction(card['_id'], cardElement));
 
-    deleteButton.classList.add('card__delete-button');
-    deleteButton.type = "button";
-    deleteButton.setAttribute("aria-label", "Кнопка удаления");
-    deleteButton.addEventListener('click', () => deleteFunction(card['_id'], cardElement));
-
-    cardImage.after(deleteButton)
+  if (userId !== card.owner['_id']) {
+    deleteButton.classList.add('card__delete-button_hidden');
   }
 
   const likesElement = cardElement.querySelector('.card_likes');
   likesElement.textContent = card.likes.length
 
   const likeButton = cardElement.querySelector('.card__like-button');
-  likeButton.addEventListener('click', () => likeFunction(userId, card, likeButton, likesElement));
+  likeButton.addEventListener('click', () => likeFunction(card, likeButton, likesElement));
 
   const findUser = card.likes.find(user => user['_id'] === userId)
 
