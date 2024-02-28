@@ -105,3 +105,20 @@ export const deleteLike = async (cardId) => {
         return Promise.reject(`Ошибка ${result.status}`)
     })
 }
+
+export const updateAvatar = async (avatarUrl) => {
+    return fetch(`${config.baseUrl}/users/me/avatar`, {
+        method: 'PATCH',
+        headers: config.headers,
+        body: JSON.stringify({
+            avatar: avatarUrl,
+        })
+    })
+    .then(result => {
+        if (result.ok) {
+            return result.json()
+        }
+
+        return Promise.reject(`Ошибка ${result.status}`)
+    })
+}
