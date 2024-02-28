@@ -1,3 +1,4 @@
 # Проектная работа Mesto
 
-https://github.com/HiRustem/mesto-project-ff
+Репозиторий - https://github.com/HiRustem/mesto-project-ff
+Ссылка на сайт - https://hirustem.github.io/mesto-project-ff/
